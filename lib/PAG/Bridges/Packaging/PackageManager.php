@@ -9,7 +9,7 @@
 namespace PAG\Bridges\Packaging;
 
 
-interface PackageMager
+interface PackageManager
 {
 
 }
