@@ -9,7 +9,9 @@
 namespace PAG\Bridges\Test;
 
 
-interface TestManager
+use Psr\Log\LoggerAwareInterface;
+
+interface TestManager extends LoggerAwareInterface
 {
 
 }

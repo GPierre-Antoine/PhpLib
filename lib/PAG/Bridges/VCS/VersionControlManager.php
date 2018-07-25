@@ -9,7 +9,9 @@
 namespace PAG\Bridges\VCS;
 
 
-interface VersionControlManager
+use Psr\Log\LoggerAwareInterface;
+
+interface VersionControlManager extends LoggerAwareInterface
 {
 
 }

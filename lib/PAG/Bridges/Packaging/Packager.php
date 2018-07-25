@@ -9,7 +9,9 @@
 namespace PAG\Bridges\Packaging;
 
 
-interface Packager
+use Psr\Log\LoggerAwareInterface;
+
+interface Packager extends LoggerAwareInterface
 {
 
 }
