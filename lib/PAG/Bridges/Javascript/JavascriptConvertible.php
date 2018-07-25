@@ -1,18 +1,20 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Pierre-Antoine
- * Date: 23/07/2018
- * Time: 19:41
+ * User: pierreantoine
+ * Date: 25/07/18
+ * Time: 14:13
  */
 
 namespace PAG\Bridges\Javascript;
 
 
-use PAG\IO\Identifiable;
-
-interface JavascriptConvertible extends Identifiable
+interface JavascriptConvertible
 {
-    public function getClassName()       : string;
-    public function getMotherClassName() : string;
+    public static function getClassName(): string;
+
+    public static function getBaseclassName(): string;
+
+    /** @return array|string[] */
+    public static function getConvertibleMethods(): array;
 }
