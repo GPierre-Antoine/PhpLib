@@ -1,15 +1,30 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Pierre-Antoine
- * Date: 24/07/2018
- * Time: 23:38
+ * User: pierreantoine
+ * Date: 25/07/18
+ * Time: 14:05
  */
 
 namespace PAG\Database;
 
-
-class DatabaseWrapper
+interface DatabaseWrapper
 {
+    public function getDbname(): string;
 
+    public function beginTransaction(): void;
+
+    public function reconnect(): void;
+
+    public function endTransaction(): void;
+
+    public function rollback(): void;
+
+    public function run(string $sql, ...$args): \PDOStatement;
+
+    public function prepare(string $request): \PDOStatement;
+
+    public function getRequestCount(): int;
+
+    public function lastInsertID(): int;
 }
