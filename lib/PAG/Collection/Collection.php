@@ -21,14 +21,9 @@ class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
         $this->options = $options;
     }
 
-    public static function explode($delimiter, $string)
+    public static function explode($delimiter, $string, $options = []): self
     {
-        return new Collection(explode($delimiter, $string));
-    }
-
-    public function duplicate() : Collection
-    {
-        return static::makeCollection($this->arr, $this->options);
+        return static::makeCollection(explode($delimiter, $string), $options);
     }
 
     /**
@@ -36,14 +31,22 @@ class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
      * @param array $options
      * @return Collection
      */
-    public static function makeCollection($array, $options)
+    public static function makeCollection($array, $options): self
     {
         return new Collection($array, $options);
     }
 
-    public function fromRange($first, $last, $step = 1)
+    public function duplicate(): self
     {
-        $array  = [];
+        return static::makeCollection($this->arr, $this->options);
+    }
+
+    public function fromRange($first, $last = null, $step = 1)
+    {
+        $array = [];
+        if (is_null($last)) {
+            $last = count($this);
+        }
         $values = $this->values();
         for (; $first < count($values) && $first < $last; $first += $step) {
             $array[] = $values[$first];
@@ -147,28 +150,11 @@ class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
         return static::makeCollection(array_map($closure, $this->arr), $this->options);
     }
 
-    public function mapAssoc($closure)
+    public function walk($closure, $userdata = null)
     {
-        $x = new Collection();
-        foreach ($this as $key => $value) {
-            $x[$key] = call_user_func($closure, $value, $key);
-        }
-        return $x;
-    }
-
-    /**
-     * @param $closure \Closure
-     * @return bool
-     */
-    public function apply($closure)
-    {
-        foreach ($this->arr as $key => $value) {
-            $return_value = call_user_func($closure, $value, $key);
-            if (!is_null($return_value)) {
-                return $return_value;
-            }
-        }
-        return null;
+        $array = $this->arr;
+        array_walk($array, $closure, $userdata);
+        return self::makeCollection($array, $this->options);
     }
 
     /**
@@ -187,16 +173,6 @@ class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
     public function concat(Collection $other)
     {
         return static::makeCollection(array_merge($this->arr, $other->arr), $this->options);
-    }
-
-    public function __get($name)
-    {
-        return $this->offsetGet($name);
-    }
-
-    public function __set($name, $value)
-    {
-        return $this->offsetSet($name, $value);
     }
 
     public function offsetGet($offset)
@@ -255,12 +231,7 @@ class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
         return static::makeCollection(array_combine($this->arr, $other->arr), $this->options);
     }
 
-    /**
-     * @param Collection $collections ...
-     *
-     * @return mixed
-     */
-    public function intersect($collections)
+    public function intersect($collections): self
     {
         $args = static::makeCollection(func_get_args(), $this->options);
         $args->unshift($this);
@@ -279,7 +250,12 @@ class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
     {
         $args = [];
         foreach ($this->arr as $collection) {
-            $args[] = $collection->arr;
+            if (is_array($collection)) {
+                $args[] = $collection;
+            }
+            else {
+                $args[] = $collection->arr;
+            }
         }
 
         return static::makeCollection(call_user_func_array('array_intersect', $args), $this->options);
