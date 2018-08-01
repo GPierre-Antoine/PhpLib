@@ -2,10 +2,18 @@
 
 namespace PAG\Connection;
 
+use PAG\Connection\Exception\FailedToChangeMode;
+use PAG\Connection\Exception\FailedToDelete;
+use PAG\Connection\Exception\FailedToGetFile;
+use PAG\Connection\Exception\FailedToMkdir;
+use PAG\Connection\Exception\FailedToPutFile;
+
 class Ftp implements FileTransferConnection
 {
+
     const MODE_PASSIVE = true;
-    const MODE_ACTIVE  = false;
+    const MODE_ACTIVE = false;
+
     private $connection;
     private $initial_directory;
     private $old_pwd;
@@ -19,27 +27,39 @@ class Ftp implements FileTransferConnection
 
     }
 
-    public function connect($host, $port, AuthenticationModule $module)
+    public function connect($host, $port, AuthenticationModule $module) : void
     {
         $this->setConnection($module->visitFtp($this, $host, $port));
-        $this->setMode(Ftp::MODE_PASSIVE);
+        $this->setModePassive();
     }
 
-    protected function setConnection($connection)
+    protected function setConnection($connection) : void
     {
-        $this->connection        = $connection;
+        $this->connection = $connection;
         $this->initial_directory = $this->pwd();
-        $this->sys_type          = ftp_systype($this->connection);
+        $this->sys_type = ftp_systype($this->connection);
     }
 
-    public function pwd()
+    public function pwd() : string
     {
         return ftp_pwd($this->connection);
     }
 
-    public function setMode($mode)
+    public function setModePassive() : void
     {
-        return ftp_pasv($this->connection, $mode);
+        $this->setMode(Ftp::MODE_PASSIVE);
+    }
+
+    private function setMode($mode) : void
+    {
+        if (!ftp_pasv($this->connection, $mode)) {
+            throw new FailedToChangeMode("Could not change mode");
+        }
+    }
+
+    public function setModeActive() : void
+    {
+        $this->setMode(Ftp::MODE_ACTIVE);
     }
 
     public function mv($source, $destination)
@@ -49,9 +69,10 @@ class Ftp implements FileTransferConnection
 
     public function __destruct()
     {
-        if (!is_null($this->connection)) {
-            ftp_close($this->connection);
+        if (is_null($this->connection)) {
+            return;
         }
+        ftp_close($this->connection);
     }
 
     public function ls()
@@ -89,20 +110,20 @@ class Ftp implements FileTransferConnection
     {
         if ($this->sys_type === 'Windows_NT') {
             $rawlist = ftp_rawlist($this->connection, $file);
-
+            /** @noinspection HtmlDeprecatedTag */
             return strpos($rawlist[0], '<DIR>') !== false;
         }
         if ($this->sys_type === 'MACOS') {
-            $filename   = basename($file);
+            $filename = basename($file);
             $foldername = dirname($file);
             if (strlen($filename) > 1) {
-                $filename = substr($filename, 0, -1) . '*';
+                $filename = substr($filename, 0, -1).'*';
             }
 
             if (substr($foldername, -1) !== '/') {
                 $foldername .= '/';
             }
-            $raw_list = ftp_rawlist($this->connection, $foldername . $filename);
+            $raw_list = ftp_rawlist($this->connection, $foldername.$filename);
             foreach ($raw_list as $value) {
                 preg_match('/^.{10}\s+[a-zA-Z0-9]+\s+[0-9]+\s[a-zA-Z]+\s+[0-9]{1,2}\s[0-9]{1,2}:[0-9]{2}\s(.+)/',
                     $value,
@@ -110,22 +131,24 @@ class Ftp implements FileTransferConnection
                 if (count($capture) < 2 || $capture[1] !== basename($file)) {
                     continue;
                 }
+
                 return $value[0] === 'd';
 
             }
+
             return false;
         }
 
-        $filename   = basename($file);
+        $filename = basename($file);
         $foldername = dirname($file);
         if (strlen($filename) > 1) {
-            $filename = substr($filename, 0, -1) . '*';
+            $filename = substr($filename, 0, -1).'*';
         }
 
         if (substr($foldername, -1) !== '/') {
             $foldername .= '/';
         }
-        $raw_list = ftp_rawlist($this->connection, $foldername . $filename);
+        $raw_list = ftp_rawlist($this->connection, $foldername.$filename);
         foreach ($raw_list as $value) {
             preg_match('/.{10}\s+[0-9]+\s+(?:[a-zA-Z0-9]+\s+){2}[0-9]+\s[A-Z][a-z]{2}\s[0-9]{2}\s[0-9]{2}:[0-9]{2}\s(.+)/',
                 $value,
@@ -133,20 +156,26 @@ class Ftp implements FileTransferConnection
             if (count($capture) < 2 || $capture[1] !== basename($file)) {
                 continue;
             }
+
             return $value[0] === 'd';
 
         }
+
         return false;
     }
 
     public function rm($path_to_remote_file)
     {
-        return ftp_delete($this->connection, $path_to_remote_file);
+        if (!ftp_delete($this->connection, $path_to_remote_file)) {
+            throw new FailedToDelete("Failed to delete file");
+        }
     }
 
     public function mkdir($directory)
     {
-        return ftp_mkdir($this->connection, $directory);
+        if (!ftp_mkdir($this->connection, $directory)) {
+            throw new FailedToMkdir("Failed to create directory");
+        }
     }
 
     public function getSySType()
@@ -156,63 +185,68 @@ class Ftp implements FileTransferConnection
 
     public function copyLocalToRemote($local, $remote)
     {
-        if (self::checkMimeTypeIsBinary($local)) {
+        if (self::inferMimeTypeIsBinary($local)) {
             $this->put_binary($local, $remote);
-        }
-        else {
+        } else {
             $this->put_ascii($local, $remote);
         }
     }
 
-    public static function checkMimeTypeIsBinary($filename): bool
+    public static function inferMimeTypeIsBinary($filename) : bool
     {
         $mime = self::getMime($filename);
+
         return !preg_match('/text/', $mime);
     }
 
-    private static function getMime($filename): string
+    private static function getMime($filename) : string
     {
         $finfo = finfo_open(FILEINFO_MIME);
+
         return finfo_file($finfo, $filename);
     }
 
-    public function put_binary($local_file, $path_to_remote_file)
+    public function put_binary($local_file, $path_to_remote_file) : void
     {
-        return $this->put($local_file, $path_to_remote_file, FTP_BINARY);
+        $this->put($local_file, $path_to_remote_file, FTP_BINARY);
     }
 
-    public function put($local_file, $path_to_remote_file, $mode = FTP_BINARY)
+    public function put($local_file, $path_to_remote_file, $mode = FTP_BINARY) : void
     {
-        return ftp_put($this->connection, $path_to_remote_file, $local_file, $mode);
+        if (!ftp_put($this->connection, $path_to_remote_file, $local_file, $mode)) {
+            throw new FailedToPutFile("Failed to put local file");
+        }
     }
 
-    public function put_ascii($local_file, $path_to_remote_file)
+    public function put_ascii($local_file, $path_to_remote_file) : void
     {
-        return $this->put($local_file, $path_to_remote_file, FTP_ASCII);
+        $this->put($local_file, $path_to_remote_file, FTP_ASCII);
     }
 
     public function copyRemoteToLocal($remote, $local)
     {
-        if (self::checkMimeTypeIsBinary($remote)) {
+        if (self::inferMimeTypeIsBinary($remote)) {
             $this->get_binary($remote, $local);
-        }
-        else {
+        } else {
             $this->get_ascii($remote, $local);
         }
     }
 
-    public function get_binary($path_to_remote_file, $local_file)
+    public function get_binary($path_to_remote_file, $local_file) : void
     {
-        return $this->get($path_to_remote_file, $local_file, FTP_BINARY);
+        $this->get($path_to_remote_file, $local_file, FTP_BINARY);
     }
 
-    public function get($path_to_remote_file, $local_file, $mode = FTP_BINARY)
+    public function get($path_to_remote_file, $local_file, $mode = FTP_BINARY) : void
     {
-        return ftp_get($this->connection, $local_file, $path_to_remote_file, $mode);
+        if (!ftp_get($this->connection, $local_file, $path_to_remote_file, $mode)) {
+            throw new FailedToGetFile("Failed to get remote file");
+        }
     }
 
-    public function get_ascii($path_to_remote_file, $local_file)
+    public function get_ascii($path_to_remote_file, $local_file) : void
     {
-        return $this->get($path_to_remote_file, $local_file, FTP_ASCII);
+        $this->get($path_to_remote_file, $local_file, FTP_ASCII);
     }
 }
+
