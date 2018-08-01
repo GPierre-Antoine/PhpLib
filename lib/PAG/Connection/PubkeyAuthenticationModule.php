@@ -8,6 +8,7 @@
 
 namespace PAG\Connection;
 
+use PAG\Connection\Exception\FailedToIdentify;
 use RuntimeException;
 
 class PubkeyAuthenticationModule implements AuthenticationModule
@@ -20,14 +21,15 @@ class PubkeyAuthenticationModule implements AuthenticationModule
 
     /**
      * pubkey_authentication_module constructor.
+     *
      * @param $username
      * @param $pubkey_file
      * @param $privkey_file
      */
     public function __construct($username, $pubkey_file, $privkey_file)
     {
-        $this->username     = $username;
-        $this->pubkey_file  = $pubkey_file;
+        $this->username = $username;
+        $this->pubkey_file = $pubkey_file;
         $this->privkey_file = $privkey_file;
     }
 
@@ -42,17 +44,10 @@ class PubkeyAuthenticationModule implements AuthenticationModule
         throw new RuntimeException("No Pubkey Authentication for ftp secure");
     }
 
-    public function visitSsh2(Ssh2 $ssh2, $host, $port)
-    {
-        $this->assertCanUseSSH2();
-        $connection = $this->ssh2Connect($host, $port);
-        $this->checkFingerPrint($ssh2, $connection);
-        $this->ssh2Identify($connection);
-        return $connection;
-    }
-
     private function ssh2Identify($connection)
     {
-        \ssh2_auth_pubkey_file($connection, $this->username, $this->pubkey_file, $this->privkey_file);
+        if (!\ssh2_auth_pubkey_file($connection, $this->username, $this->pubkey_file, $this->privkey_file)) {
+            throw new FailedToIdentify("Could not connect to remote host with pubkey");
+        }
     }
 }
