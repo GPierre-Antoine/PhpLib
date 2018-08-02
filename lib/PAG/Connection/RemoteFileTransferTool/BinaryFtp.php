@@ -6,7 +6,7 @@
  * Time: 20:38
  */
 
-namespace PAG\Connection\Ftp;
+namespace PAG\Connection\RemoteFileTransferTool;
 
 
 use PAG\Connection\Ftp;
@@ -21,12 +21,12 @@ class BinaryFtp implements RemoteFileTransferTool
         $this->ftp = $ftp;
     }
 
-    public function copyLocalToRemote($local, $remote)
+    public function copyLocalToRemote($local, $remote): void
     {
         $this->ftp->put_binary($local, $remote);
     }
 
-    public function copyRemoteToLocal($remote, $local)
+    public function copyRemoteToLocal($remote, $local): void
     {
         $this->ftp->get_binary($remote, $local);
     }

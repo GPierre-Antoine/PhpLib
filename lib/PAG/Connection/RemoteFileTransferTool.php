@@ -11,7 +11,7 @@ namespace PAG\Connection;
 
 interface RemoteFileTransferTool
 {
-    public function copyLocalToRemote($local, $remote);
+    public function copyLocalToRemote($local, $remote):void;
 
-    public function copyRemoteToLocal($remote, $local);
+    public function copyRemoteToLocal($remote, $local):void;
 }

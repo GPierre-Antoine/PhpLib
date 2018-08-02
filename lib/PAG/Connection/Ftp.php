@@ -183,7 +183,7 @@ class Ftp implements RemoteFileTransferTool, Connection
         return $this->sys_type;
     }
 
-    public function copyLocalToRemote($local, $remote)
+    public function copyLocalToRemote($local, $remote):void
     {
         if (self::inferMimeTypeIsBinary($local)) {
             $this->put_binary($local, $remote);
@@ -223,7 +223,7 @@ class Ftp implements RemoteFileTransferTool, Connection
         $this->put($local_file, $path_to_remote_file, FTP_ASCII);
     }
 
-    public function copyRemoteToLocal($remote, $local)
+    public function copyRemoteToLocal($remote, $local):void
     {
         if (self::inferMimeTypeIsBinary($remote)) {
             $this->get_binary($remote, $local);
