@@ -19,25 +19,25 @@ use PAG\Connection\Exception\FailedToRmDir;
 use PAG\Connection\Exception\FailedToSymlink;
 use RuntimeException;
 
-class Sftp implements Ssh2, FileTransferConnection
+class Sftp implements Ssh2, RemoteFileTransferTool
 {
     private $connection;
     private $sftp;
     private $fingerPrint;
 
-    public function connect($host, $port, AuthenticationModule $module, $fingerprint = null) : void
+    public function connect($host, $port, AuthenticationModule $module, $fingerprint = null): void
     {
         $this->fingerPrint = $fingerprint;
         $this->setConnection($module->visitSsh2($this, $host, $port));
     }
 
-    private function setConnection($connection) : void
+    private function setConnection($connection): void
     {
         $this->connection = $connection;
         $this->buildSftpConnection();
     }
 
-    private function buildSftpConnection() : void
+    private function buildSftpConnection(): void
     {
         $this->sftp = ssh2_sftp($this->connection);
         if (!$this->sftp) {
@@ -52,16 +52,16 @@ class Sftp implements Ssh2, FileTransferConnection
         }
     }
 
-    public function disconnect() : void
+    public function disconnect(): void
     {
         if (!$this->connection) {
             return;
         }
         $this->connection = null;
-        $this->sftp = null;
+        $this->sftp       = null;
     }
 
-    public function getFingerprint() : string
+    public function getFingerprint(): string
     {
         if (!$this->hasFingerprint()) {
             throw new RuntimeException("No fingerprints");
@@ -70,81 +70,81 @@ class Sftp implements Ssh2, FileTransferConnection
         return $this->fingerPrint;
     }
 
-    public function hasFingerprint() : bool
+    public function hasFingerprint(): bool
     {
         return !is_null($this->fingerPrint);
     }
 
-    public function delete($filename) : void
+    public function delete($filename): void
     {
         if (!ssh2_sftp_unlink($this->sftp, $filename)) {
             throw new FailedToDelete("Failed to delete file");
         }
     }
 
-    public function chmod($filename, $mode) : void
+    public function chmod($filename, $mode): void
     {
         if (!ssh2_sftp_chmod($this->sftp, $filename, $mode)) {
             throw new FailedToChmod("Failed to change folder mode");
         }
     }
 
-    public function symbolicLinkStat($path) : array
+    public function symbolicLinkStat($path): array
     {
         return ssh2_sftp_lstat($this->sftp, $path);
     }
 
-    public function mkdir($dirname, $mode = 0744, $recursive = false) : void
+    public function mkdir($dirname, $mode = 0744, $recursive = false): void
     {
         if (!ssh2_sftp_mkdir($this->sftp, $dirname, $mode, $recursive)) {
             throw new FailedToMkdir("Failed to create directory");
         }
     }
 
-    public function readlink($link) : string
+    public function readlink($link): string
     {
         return ssh2_sftp_readlink($this->sftp, $link);
     }
 
-    public function realpath($filename) : string
+    public function realpath($filename): string
     {
         return ssh2_sftp_realpath($this->sftp, $filename);
     }
 
-    public function renameFromTo($from, $to) : void
+    public function renameFromTo($from, $to): void
     {
         if (!ssh2_sftp_rename($this->sftp, $from, $to)) {
             throw new FailedToRename("Failed to rename file");
         }
     }
 
-    public function rmdir($dirname) : void
+    public function rmdir($dirname): void
     {
         if (!ssh2_sftp_rmdir($this->sftp, $dirname)) {
             throw new FailedToRmDir("Fail to remove directory");
         }
     }
 
-    public function stat($path) : array
+    public function stat($path): array
     {
         return ssh2_sftp_stat($this->sftp, $path);
     }
 
-    public function symlink($target, $link) : void
+    public function symlink($target, $link): void
     {
         if (!ssh2_sftp_symlink($this->sftp, $target, $link)) {
             throw new FailedToSymlink("Fail to make symlink");
         }
     }
 
-    public function copyLocalToRemote($local, $remote) : void
+    public function copyLocalToRemote($local, $remote): void
     {
-        if (!$this->copyFile($local, $this->makeSsh2Link().$remote)) {
+        if (!$this->copyFile($local, $this->makeSsh2Link() . $remote)) {
             throw new FailedToPutFile("Failed to put local file on remote server");
         }
     }
 
-    private function copyFile($source, $target) : bool
+    private function copyFile($source, $target): bool
     {
         $source_handler = fopen($source, 'r');
         $target_handler = fopen($target, 'w');
@@ -156,28 +156,28 @@ class Sftp implements Ssh2, FileTransferConnection
         return $result;
     }
 
-    private function makeSsh2Link() : string
+    private function makeSsh2Link(): string
     {
         $sftp = intval($this->sftp);
 
         return "ssh2.sftp://{$sftp}/";
     }
 
-    public function copyRemoteToLocal($remote, $local) : void
+    public function copyRemoteToLocal($remote, $local): void
     {
-        if (!$this->copyFile($this->makeSsh2Link().$remote, $local)) {
+        if (!$this->copyFile($this->makeSsh2Link() . $remote, $local)) {
             throw new FailedToGetFile("Failed to get remote file");
         }
     }
 
-    public function isDir($path) : bool
+    public function isDir($path): bool
     {
-        return $this->isDir($this->makeSsh2Link().$path);
+        return $this->isDir($this->makeSsh2Link() . $path);
     }
 
-    public function read($filename) : string
+    public function read($filename): string
     {
-        return file_get_contents($this->makeSsh2Link().$filename);
+        return file_get_contents($this->makeSsh2Link() . $filename);
     }
 
 }

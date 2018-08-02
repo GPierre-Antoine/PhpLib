@@ -8,7 +8,7 @@ use PAG\Connection\Exception\FailedToGetFile;
 use PAG\Connection\Exception\FailedToMkdir;
 use PAG\Connection\Exception\FailedToPutFile;
 
-class Ftp implements FileTransferConnection
+class Ftp implements RemoteFileTransferTool, Connection
 {
 
     const MODE_PASSIVE = true;

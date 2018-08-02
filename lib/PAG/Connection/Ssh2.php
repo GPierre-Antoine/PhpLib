@@ -8,13 +8,13 @@
 
 namespace PAG\Connection;
 
-interface Ssh2
+interface Ssh2 extends Connection
 {
     const UNKNOWN_FINGERPRINT = 10;
 
-    public function connect($host, $port, AuthenticationModule $authentication_module);
+    public function connect($host, $port, AuthenticationModule $authentication_module): void;
 
-    public function hasFingerprint();
+    public function hasFingerprint():bool;
 
-    public function getFingerprint();
+    public function getFingerprint():string;
 }

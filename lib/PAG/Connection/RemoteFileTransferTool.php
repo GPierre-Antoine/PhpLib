@@ -9,7 +9,7 @@
 namespace PAG\Connection;
 
 
-interface FileTransferConnection extends Connection
+interface RemoteFileTransferTool
 {
     public function copyLocalToRemote($local, $remote);
 

@@ -9,22 +9,16 @@
 namespace PAG\Connection\Ftp;
 
 
-use PAG\Connection\AuthenticationModule;
-use PAG\Connection\FileTransferConnection;
 use PAG\Connection\Ftp;
+use PAG\Connection\RemoteFileTransferTool;
 
-class BinaryFtp implements FileTransferConnection
+class BinaryFtp implements RemoteFileTransferTool
 {
     private $ftp;
 
     public function __construct(Ftp $ftp)
     {
         $this->ftp = $ftp;
-    }
-
-    public function connect($hostname, $port, AuthenticationModule $authenticationModule) : void
-    {
-        $this->ftp->connect($hostname, $port, $authenticationModule);
     }
 
     public function copyLocalToRemote($local, $remote)
