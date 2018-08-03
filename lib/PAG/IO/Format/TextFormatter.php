@@ -21,7 +21,7 @@ final class TextFormatter
         return $this->effect(static::BOLD, $string);
     }
 
-    public function effect($tag, $string)
+    private function effect($tag, $string)
     {
         return $tag . $string . static::RESET;
     }
