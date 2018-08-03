@@ -8,7 +8,7 @@
 
 namespace PAG\IO\Format;
 
-abstract class TextFormatter
+final class TextFormatter
 {
     const BOLD          = "\e[1m";
     const ITALIC        = "\e[3m";
@@ -16,32 +16,32 @@ abstract class TextFormatter
     const STRIKETHROUGH = "\e[9m";
     const RESET         = "\e[0m";
 
-    public final function bold($string)
+    public function bold($string)
     {
         return $this->effect(static::BOLD, $string);
     }
 
-    public final function effect($tag, $string)
+    public function effect($tag, $string)
     {
         return $tag . $string . static::RESET;
     }
 
-    public final function underline($string)
+    public function underline($string)
     {
         return $this->effect(static::UNDERLINE, $string);
     }
 
-    public final function italic($string)
+    public function italic($string)
     {
         return $this->effect(static::ITALIC, $string);
     }
 
-    public final function strikethrough($string)
+    public function strikethrough($string)
     {
         return $this->effect(static::STRIKETHROUGH, $string);
     }
 
-    public final function convert(string $string, TextFormat $format): string
+    public function convert(TextFormat $format, string $string): string
     {
         return $format->convert($this, $string);
     }
