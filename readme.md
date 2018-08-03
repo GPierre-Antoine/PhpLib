@@ -15,3 +15,5 @@ This code try to follows the PSR recommendations except for PSR-2 5.1 (namely pu
 - I have troubles reading
 - Doesn't play well with my IDE's code autofolding
 
+
+Licence : MIT
