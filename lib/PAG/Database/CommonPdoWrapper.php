@@ -11,14 +11,14 @@ namespace PAG\Database;
 
 use PDO;
 
-class CommonDatabaseWrapper implements DatabaseWrapper
+class CommonPdoWrapper implements DatabaseWrapper
 {
 
+    protected $reconnection_function;
     /**
      * @var PDO
      */
-    protected $pdo;
-    protected $reconnection_function;
+    private   $pdo;
     private   $request_count;
     private   $db_name;
     private   $db_type;
@@ -140,5 +140,10 @@ class CommonDatabaseWrapper implements DatabaseWrapper
     public function lastInsertID(): int
     {
         return $this->pdo->lastInsertId();
+    }
+
+    public function getPdo(): PDO
+    {
+        return $this->pdo;
     }
 }
