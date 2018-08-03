@@ -58,12 +58,12 @@ class ShutdownEventHandler
         self::$shutdown_error[$identifier] = $function;
     }
 
-    public static function deleteShutdownHandler($identifier)
+    public static function cancelHandler($identifier)
     {
         unset(self::$shutdown[$identifier]);
     }
 
-    public static function deleteErrorShutdownHandler($identifier)
+    public static function cancelErrorHandler($identifier)
     {
         unset(self::$shutdown_error[$identifier]);
     }
