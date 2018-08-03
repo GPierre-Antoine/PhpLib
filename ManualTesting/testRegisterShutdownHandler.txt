@@ -1,0 +1,2 @@
+Bootstrap OK
+END OF TESTS
