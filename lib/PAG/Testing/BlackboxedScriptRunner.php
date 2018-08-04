@@ -11,10 +11,10 @@ class BlackboxedScriptRunner
 
     public static function fetchScriptStdout($script) : string
     {
-        return self::executeFile($script, ' 2>/dev/null');
+        return self::secureExecuteFile($script, ' 2>/dev/null');
     }
 
-    private static function executeFile($script, $option) : string
+    private static function secureExecuteFile($script, $option) : string
     {
         if (!self::checkContextReliabilty()) {
             throw new RuntimeException("Cannot use this function in this setting for security reasons");
@@ -30,6 +30,6 @@ class BlackboxedScriptRunner
 
     public static function fetchScriptStderr($script) : string
     {
-        return self::executeFile($script, ' 2>&1 > /dev/null');
+        return self::secureExecuteFile($script, ' 2>&1 > /dev/null');
     }
 }
