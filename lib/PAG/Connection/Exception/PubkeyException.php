@@ -9,7 +9,7 @@
 namespace PAG\Connection\Exception;
 
 
-interface PubkeyException extends AuthenticationModuleException
+interface PubkeyException extends AuthenticationException
 {
 
 }

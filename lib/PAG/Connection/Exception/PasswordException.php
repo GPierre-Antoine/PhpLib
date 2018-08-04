@@ -9,7 +9,7 @@
 namespace PAG\Connection\Exception;
 
 
-interface PasswordException extends AuthenticationModuleException
+interface PasswordException extends AuthenticationException
 {
 
 }
