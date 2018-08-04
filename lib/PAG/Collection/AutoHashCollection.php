@@ -23,17 +23,12 @@ class AutoHashCollection extends Collection
 
     }
 
-    /**
-     * @param       $array
-     * @param array $options
-     * @return AutoHashCollection
-     */
-    public static function makeCollection($array, $options)
+    public static function makeCollection($array, $options) : Collection
     {
         return new AutoHashCollection($options[static::CLOSURE], $array, $options);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (is_null($offset)) {
             $offset = call_user_func($this->options[static::CLOSURE], $value);
@@ -41,7 +36,7 @@ class AutoHashCollection extends Collection
         parent::offsetSet($offset, $value);
     }
 
-    public function slice($offset, $length = null, $preserve_keys = true)
+    public function slice($offset, $length = null, $preserve_keys = true) : Collection
     {
         return parent::slice($offset, $length, $preserve_keys);
     }
