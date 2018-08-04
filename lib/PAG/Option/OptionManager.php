@@ -31,15 +31,15 @@ class OptionManager
     public function __construct(
         LoggerInterface $logger,
         Collection $argv,
-        $checkForHelp = ["-h", "--help"],
-        TextFormatter $formatter
+        TextFormatter $formatter,
+        $checkForHelp = ["-h", "--help"]
     ) {
-        $this->argv         = $argv;
-        $this->bindings     = new Collection();
+        $this->argv = $argv;
+        $this->bindings = new Collection();
         $this->checkForHelp = $checkForHelp;
-        $this->help         = false;
-        $this->logger       = $logger;
-        $this->formatter    = $formatter;
+        $this->help = false;
+        $this->logger = $logger;
+        $this->formatter = $formatter;
     }
 
     public function bind($schema, $option)
@@ -53,6 +53,7 @@ class OptionManager
             foreach ($this->argv as $item) {
                 if (in_array($item, $this->checkForHelp)) {
                     $this->makeHelp();
+
                     return;
                 }
             }
