@@ -22,28 +22,18 @@ abstract class DefaultApplication implements Application
         $this->logger = $logger;
     }
 
-    private static function isCommandLineExecution() : bool
-    {
-        return php_sapi_name() == "cli";
-    }
-
-    public final function start(): void
+    public final function start() : void
     {
         if (self::isCommandLineExecution()) {
             $this->prepareForCliExecution();
-        }
-        else {
+        } else {
             $this->prepareForWebExecution();
         }
     }
 
-    public abstract function handleCli(Collection $argv): void;
-
-    public abstract function handleWeb(Collection $argv): void;
-
-    public function setLogger(LoggerInterface $logger)
+    private static function isCommandLineExecution() : bool
     {
-        $this->logger = $logger;
+        return php_sapi_name() == "cli";
     }
 
     private function prepareForCliExecution() : void
@@ -54,11 +44,20 @@ abstract class DefaultApplication implements Application
         $this->handleCli($request);
     }
 
+    public abstract function handleCli(Collection $argv) : void;
+
     private function prepareForWebExecution() : void
     {
         $uri = $_SERVER['REQUEST_URI'];
         $request = new Collection(preg_split("/\?|&|(%20)|=/", $uri));
         $request->shift();
         $this->handleWeb($request);
+    }
+
+    public abstract function handleWeb(Collection $argv) : void;
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 }
