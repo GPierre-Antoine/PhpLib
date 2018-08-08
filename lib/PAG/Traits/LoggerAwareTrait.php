@@ -11,12 +11,12 @@ namespace PAG\Traits;
 
 use Psr\Log\LoggerInterface;
 
-trait LoggerUserTrait
+trait LoggerAwareTrait
 {
     /**
      * @type LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
 
     public function getLogger()
