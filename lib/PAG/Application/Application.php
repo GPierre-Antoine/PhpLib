@@ -10,11 +10,10 @@ namespace PAG\Application;
 
 
 use PAG\Collection\Collection;
-use Psr\Log\LoggerAwareInterface;
 
-interface Application extends LoggerAwareInterface
+interface Application
 {
-    public function start(): void;
-    public function handleCli(Collection $argv) : void;
-    public function handleWeb(Collection $argv) : void;
+    public function handleCommandLineRequest(Collection $argv): void;
+
+    public function handleWebRequest(Collection $argv): void;
 }
