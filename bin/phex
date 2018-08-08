@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+use PAG\Application\ExecutorApplication;
+use PAG\Application\InputForwarder;
+use Psr\Autoload\AutoloaderClass;
+
+require_once __DIR__ . "/../lib/Psr/Autoload/AutoloaderClass.php";
+
+$loader = new AutoloaderClass();
+
+$loader->addNamespace('Psr', __DIR__ . "/../lib/Psr");
+$loader->addNamespace('PAG', __DIR__ . "/../lib/PAG");
+$loader->register();
+
+$executor = new ExecutorApplication();
+
+InputForwarder::startApplication($executor);
