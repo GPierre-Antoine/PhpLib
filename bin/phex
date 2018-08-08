@@ -3,6 +3,7 @@
 
 use PAG\Application\ExecutorApplication;
 use PAG\Application\InputForwarder;
+use PAG\Executor\Executor;
 use Psr\Autoload\AutoloaderClass;
 
 require_once __DIR__ . "/../lib/Psr/Autoload/AutoloaderClass.php";
@@ -13,6 +14,11 @@ $loader->addNamespace('Psr', __DIR__ . "/../lib/Psr");
 $loader->addNamespace('PAG', __DIR__ . "/../lib/PAG");
 $loader->register();
 
-$executor = new ExecutorApplication();
+try {
+    $executor = new ExecutorApplication(new Executor());
 
-InputForwarder::startApplication($executor);
+    InputForwarder::startApplication($executor);
+}
+catch (Exception $e) {
+    echo $e->getMessage() . PHP_EOL;
+}
