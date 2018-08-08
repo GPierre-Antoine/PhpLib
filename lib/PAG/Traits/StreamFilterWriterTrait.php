@@ -13,8 +13,8 @@ use PAG\Stream\StreamFilterVisitor;
 
 trait StreamFilterWriterTrait
 {
-    public function accept(StreamFilterVisitor $visitor)
+    public function accept(StreamFilterVisitor $visitor):void
     {
-        return $visitor->visitWrite($this);
+        $visitor->visitWrite($this);
     }
 }
