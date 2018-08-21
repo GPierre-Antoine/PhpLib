@@ -3,7 +3,7 @@
 namespace PAG\Testing;
 
 
-use http\Exception\RuntimeException;
+use \RuntimeException;
 
 class BlackboxedScriptRunner
 {

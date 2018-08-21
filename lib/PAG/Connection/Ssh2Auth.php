@@ -8,7 +8,7 @@
 
 namespace PAG\Connection;
 
-use http\Exception\RuntimeException;
+use \RuntimeException;
 use PAG\Connection\Exception\BadFingerPrint;
 use PAG\Connection\Exception\FailedToConnect;
 

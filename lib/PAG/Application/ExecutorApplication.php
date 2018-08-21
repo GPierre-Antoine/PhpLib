@@ -9,7 +9,7 @@
 namespace PAG\Application;
 
 
-use http\Exception\RuntimeException;
+use \RuntimeException;
 use PAG\Collection\Collection;
 use PAG\Executor\Executor;
 use PAG\Log\ConsoleLogger;
