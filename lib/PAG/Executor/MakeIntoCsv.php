@@ -35,7 +35,7 @@ class MakeIntoCsv implements Executable
     public function run()
     {
         while ($string = stream_get_line($this->in, $this->buffer, $this->ending)) {
-            fputcsv($this->out, explode(' ', $string), $this->delimiter, $this->enclosure, $this->escape_char);
+            fputcsv($this->out, preg_split('/\s+/', $string), $this->delimiter, $this->enclosure, $this->escape_char);
         }
     }
 }
