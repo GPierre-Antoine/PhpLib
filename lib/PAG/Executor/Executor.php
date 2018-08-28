@@ -34,14 +34,13 @@ class Executor implements LoggerAwareInterface
 
     private function makeExecutable($name, $options): Executable
     {
-        $className = "";
-        switch ($name) {
-            case "csvize":
-                $className = "PAG\Executor\MakeIntoCsv";
-                break;
-            default:
-                throw new RuntimeException("No such thing $name");
+        $classArray = [
+            "csvize" => "PAG\Executor\MakeIntoCsv",
+        ];
+        if (!array_key_exists($name, $classArray)) {
+            throw new RuntimeException("No such thing $name");
         }
+        $className = $classArray[$name];
         return new $className(...$options);
     }
 }
