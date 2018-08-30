@@ -9,7 +9,7 @@
 namespace siwipo\io\Options;
 
 use PAG\Collection\Collection;
-use PAG\IO\Format\TextFormatter;
+use PAG\IO\Text\TextFormatter;
 
 class OptionChecker implements OptionVisitor
 {

@@ -10,7 +10,7 @@ namespace siwipo\io\options;
 
 
 use PAG\Collection\Collection;
-use PAG\IO\Format\TextFormatter;
+use PAG\IO\Text\TextFormatter;
 use Psr\Log\LoggerInterface;
 
 class OptionHelp implements OptionVisitor
