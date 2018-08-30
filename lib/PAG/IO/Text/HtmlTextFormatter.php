@@ -6,7 +6,7 @@
  * Time: 14:22
  */
 
-namespace PAG\IO\Format;
+namespace PAG\IO\Text;
 
 
 class HtmlTextFormatter implements TextFormat

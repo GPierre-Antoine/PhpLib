@@ -6,7 +6,7 @@
  * Time: 14:49
  */
 
-namespace PAG\IO\Format;
+namespace PAG\IO\Text;
 
 
 interface TextFormat

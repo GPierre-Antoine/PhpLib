@@ -6,7 +6,7 @@
  * Time: 14:46
  */
 
-namespace PAG\IO\Format;
+namespace PAG\IO\Text;
 
 final class TextFormatter
 {
