@@ -36,12 +36,12 @@ class PubkeyAuthenticationModule implements AuthenticationModule
 
     public function visitFtp(Ftp $ftp, $host, $port)
     {
-        throw new RuntimeException("No Pubkey Authentication for simple ftp");
+        throw new RuntimeException("No Pubkey Authentication with FTP");
     }
 
     public function visitFtpSsl(Ftp $ftp, $host, $port)
     {
-        throw new RuntimeException("No Pubkey Authentication for ftp secure");
+        throw new RuntimeException("No Pubkey Authentication with FTP Secure");
     }
 
     private function ssh2Identify($connection)
