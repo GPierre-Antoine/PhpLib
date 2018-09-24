@@ -20,6 +20,7 @@ $autoload = new AutoloaderClass();
 
 $autoload->addNamespace('Psr', $base . "/Psr");
 $autoload->addNamespace('PAG', $base . "/PAG");
+$autoload->addNamespace('Experimental', $base . "/Experimental");
 
 $autoload->register();
 
