@@ -3,9 +3,13 @@
 namespace PAG\Bridges\Sherlocks;
 
 
+use RuntimeException;
+
 class PaymentHandler
 {
+    const ERROR_TITLE            = "Sherlocks PaymentHandler Error";
     const DEFAULT_EXECUTABLE_DIR = "/usr/local/bin/sherlocks";
+
     private $merchantId;
     private $requestBinary;
     private $pathFile;
@@ -32,18 +36,23 @@ class PaymentHandler
     {
         self::assertReadable($name, $file);
         if (!is_executable($file)) {
-            throw new \RuntimeException("Sherlock PaymentHandler error : Unexecutable $file as $name");
+            self::throwError("Non-executable $name «{$file}»");
         }
     }
 
     private static function assertReadable(string $name, string $file): void
     {
         if (!file_exists($file)) {
-            throw new \RuntimeException("Sherlock PaymentHandler error : Invalid $file as $name");
+            self::throwError("$name not found at path «{$file}»");
         }
         if (!is_readable($file)) {
-            throw new \RuntimeException("Sherlock PaymentHandler error : Unreadable $file as $name");
+            self::throwError("Unreadable $name «{$file}»");
         }
+    }
+
+    private static function throwError(string $string): void
+    {
+        throw new RuntimeException(self::ERROR_TITLE . " : $string");
     }
 
     public static function makeProdHandler(string $prodId, string $pathfile, string $directory = null)

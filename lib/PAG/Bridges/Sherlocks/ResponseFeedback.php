@@ -4,7 +4,7 @@ namespace PAG\Bridges\Sherlocks;
 
 class ResponseFeedback
 {
-    private $code;
+    private $binary_code;
     private $error;
     private $merchant_id;
     private $merchant_country;
@@ -51,7 +51,7 @@ class ResponseFeedback
     public function __construct(string $feedback)
     {
         $parsed                       = explode("!", $feedback);
-        $this->code                   = $parsed[1];
+        $this->binary_code            = $parsed[1];
         $this->error                  = $parsed[2];
         $this->merchant_id            = $parsed[3];
         $this->merchant_country       = $parsed[4];
@@ -98,12 +98,27 @@ class ResponseFeedback
 
     public function isInvalid(): bool
     {
-        return $this->code == '' && $this->error == '';
+        return $this->binary_code == '' && $this->error == '';
     }
 
-    public function isError(): bool
+    public function isBinaryError(): bool
     {
-        return $this->code != 0;
+        return $this->getBinaryCode() != 0;
+    }
+
+    public function getBinaryCode(): string
+    {
+        return $this->binary_code;
+    }
+
+    public function isApiError(): bool
+    {
+        return $this->getResponseCode() != '00';
+    }
+
+    public function getResponseCode(): string
+    {
+        return $this->response_code;
     }
 
     public function getError(): string
@@ -383,28 +398,18 @@ class ResponseFeedback
         return "Num&eacute;ro d'erreur non identifi&eacute;e";
     }
 
-    public function getResponseCode(): string
-    {
-        return $this->response_code;
-    }
-
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
     public function isMalicious(): bool
     {
-        return in_array($this->code, [4, 34, 43, 59]);
+        return in_array($this->binary_code, [4, 34, 43, 59]);
     }
 
     public function isDuplicate(): bool
     {
-        return in_array($this->code, [26, 94]);
+        return in_array($this->binary_code, [26, 94]);
     }
 
     public function isCancelled(): bool
     {
-        return $this->code == 17;
+        return $this->binary_code == 17;
     }
 }
