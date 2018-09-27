@@ -5,6 +5,7 @@ namespace PAG\Bridges\Sherlocks;
 
 class PaymentHandler
 {
+    const DEFAULT_EXECUTABLE_DIR = "/usr/local/bin/sherlocks";
     private $merchantId;
     private $requestBinary;
     private $pathFile;
@@ -12,7 +13,7 @@ class PaymentHandler
     private $prod;
     private $executedString;
 
-    public function __construct(string $merchantId, string $requestBinary, string $responseBinary, string $pathFile,
+    protected function __construct(string $merchantId, string $requestBinary, string $responseBinary, string $pathFile,
         bool $prod)
     {
 
@@ -45,15 +46,15 @@ class PaymentHandler
         }
     }
 
-    public static function makeProdHandler(string $prodId, string $pathfile,
-        string $directory = "/usr/local/bin/sherlocks")
+    public static function makeProdHandler(string $prodId, string $pathfile, string $directory = null)
     {
+        $directory = $directory ?: self::DEFAULT_EXECUTABLE_DIR;
         return new PaymentHandler($prodId, "$directory/request", "$directory/response", $pathfile, true);
     }
 
-    public static function makeTestHandler(string $testId, string $pathfile,
-        string $directory = "/usr/local/bin/sherlocks")
+    public static function makeTestHandler(string $testId, string $pathfile, string $directory = null)
     {
+        $directory = $directory ?: self::DEFAULT_EXECUTABLE_DIR;
         return new PaymentHandler($testId, "$directory/request", "$directory/response", $pathfile, false);
     }
 
