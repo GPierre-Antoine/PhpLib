@@ -9,40 +9,53 @@ class PaymentHandler
     private $requestBinary;
     private $pathFile;
     private $responseBinary;
-    private $testHandler;
+    private $prod;
     private $executedString;
 
-    public function __construct(string $merchantId, string $requestBinary, string $responseBinary, string $pathFile, bool $testHandler)
+    public function __construct(string $merchantId, string $requestBinary, string $responseBinary, string $pathFile,
+        bool $prod)
     {
+
+        self::assertExecutable("request", $requestBinary);
+        self::assertExecutable("response", $responseBinary);
+        self::assertReadable("pathfile", $pathFile);
+
         $this->merchantId     = $merchantId;
         $this->requestBinary  = $requestBinary;
         $this->pathFile       = $pathFile;
         $this->responseBinary = $responseBinary;
-        foreach ([
-                     'request'  => $requestBinary,
-                     'response' => $responseBinary,
-                     'pathfile' => $pathFile,
-                 ] as $key => $file) {
-            $this->controlFileOk($file, $key);
-        }
-
-        $this->testHandler = $testHandler;
+        $this->prod           = $prod;
     }
 
-    private function controlFileOk(string $file, string $key):void
+    private static function assertExecutable(string $name, string $file): void
+    {
+        self::assertReadable($name, $file);
+        if (!is_executable($file)) {
+            throw new \RuntimeException("Sherlock PaymentHandler error : Unexecutable $file as $name");
+        }
+    }
+
+    private static function assertReadable(string $name, string $file): void
     {
         if (!file_exists($file)) {
-            throw new \RuntimeException("Sherlock PaymentHandler error : Invalid $file as $key");
+            throw new \RuntimeException("Sherlock PaymentHandler error : Invalid $file as $name");
         }
         if (!is_readable($file)) {
-            throw new \RuntimeException("Sherlock PaymentHandler error : Unreadable $file as $key");
-        }
-        if ($key != 'pathfile' && !is_executable($file)) {
-            throw new \RuntimeException("Sherlock PaymentHandler error : Unexecutable $file as $key");
+            throw new \RuntimeException("Sherlock PaymentHandler error : Unreadable $file as $name");
         }
     }
 
-    public function callRequest(RequestInfo $options):RequestFeedback
+    public static function makeHandler(string $testId, string $prodId, bool $useProd, string $pathfile)
+    {
+        $ref = $useProd ? $prodId : $testId;
+        return new PaymentHandler($ref,
+            '/usr/local/bin/sherlocks/request',
+            '/usr/local/bin/sherlocks/response',
+            $pathfile,
+            $useProd);
+    }
+
+    public function callRequest(RequestInfo $options): RequestFeedback
     {
         $options->merchant_id = $this->merchantId;
         $options->pathfile    = $this->pathFile;
@@ -50,34 +63,34 @@ class PaymentHandler
         return new RequestFeedback($result);
     }
 
-    public function callResponse(ResponseInfo $info):ResponseFeedback
+    public function callResponse(ResponseInfo $info): ResponseFeedback
     {
         $info->pathfile = $this->pathFile;
         $result         = exec($this->responseBinary . $info);
         return new ResponseFeedback($result);
     }
 
-    public function getPathFile():string
+    public function getPathFile(): string
     {
         return $this->pathFile;
     }
 
-    public function getRequestBinary():string
+    public function getRequestBinary(): string
     {
         return $this->requestBinary;
     }
 
-    public function getResponseBinary():string
+    public function getResponseBinary(): string
     {
         return $this->responseBinary;
     }
 
-    public function isTestSession():bool
+    public function isProd(): bool
     {
-        return $this->testHandler;
+        return $this->prod;
     }
 
-    public function getExecutedString():string
+    public function getExecutedString(): string
     {
         return $this->executedString;
     }
