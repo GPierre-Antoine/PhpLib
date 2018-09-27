@@ -45,14 +45,16 @@ class PaymentHandler
         }
     }
 
-    public static function makeHandler(string $testId, string $prodId, bool $useProd, string $pathfile)
+    public static function makeProdHandler(string $prodId, string $pathfile,
+        string $directory = "/usr/local/bin/sherlocks")
     {
-        $ref = $useProd ? $prodId : $testId;
-        return new PaymentHandler($ref,
-            '/usr/local/bin/sherlocks/request',
-            '/usr/local/bin/sherlocks/response',
-            $pathfile,
-            $useProd);
+        return new PaymentHandler($prodId, "$directory/request", "$directory/response", $pathfile, true);
+    }
+
+    public static function makeTestHandler(string $testId, string $pathfile,
+        string $directory = "/usr/local/bin/sherlocks")
+    {
+        return new PaymentHandler($testId, "$directory/request", "$directory/response", $pathfile, false);
     }
 
     public function callRequest(RequestInfo $options): RequestFeedback
