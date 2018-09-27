@@ -400,16 +400,16 @@ class ResponseFeedback
 
     public function isMalicious(): bool
     {
-        return in_array($this->binary_code, [4, 34, 43, 59]);
+        return in_array($this->getResponseCode(), [4, 34, 43, 59]);
     }
 
     public function isDuplicate(): bool
     {
-        return in_array($this->binary_code, [26, 94]);
+        return in_array($this->getResponseCode(), [26, 94]);
     }
 
     public function isCancelled(): bool
     {
-        return $this->binary_code == 17;
+        return $this->getResponseCode() == 17;
     }
 }
