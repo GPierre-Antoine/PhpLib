@@ -15,6 +15,11 @@ class ResponseInfo
         $this->message = $message;
     }
 
+    public static function makeFromPostData(): ResponseInfo
+    {
+        return new self($_POST['DATA']);
+    }
+
     public function computeString(): string
     {
         $array = [];
