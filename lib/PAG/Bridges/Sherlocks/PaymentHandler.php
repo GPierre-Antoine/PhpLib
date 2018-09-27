@@ -42,9 +42,7 @@ class PaymentHandler
 
     private static function assertReadable(string $name, string $file): void
     {
-        if (!file_exists($file)) {
-            self::throwError("$name not found at path «{$file}»");
-        }
+        self::assertExists($name, $file);
         if (!is_readable($file)) {
             self::throwError("Unreadable $name «{$file}»");
         }
@@ -65,6 +63,13 @@ class PaymentHandler
     {
         $directory = $directory ?: self::DEFAULT_EXECUTABLE_DIR;
         return new PaymentHandler($testId, "$directory/request", "$directory/response", $pathfile, false);
+    }
+
+    private static function assertExists(string $name, string $file): void
+    {
+        if (!file_exists($file)) {
+            self::throwError("$name not found at path «{$file}»");
+        }
     }
 
     public function callRequest(RequestInfo $options): RequestFeedback
