@@ -1,0 +1,2 @@
+mysql_query\(\s*(\$[a-zA-Z0-9_]+),\s*(\$[a-zA-Z0-9_]+)\);
+mysqli_query($2,$1);
