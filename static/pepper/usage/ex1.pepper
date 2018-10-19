@@ -1,0 +1,10 @@
+
+usage :
+
+pepper start < base.pepper
+pepper define specifJs --list --spliton="\n" files=$(find /my/directory -iname "*.js" -type f -exec basename {} ';')
+pepper define specifCss --list --spliton="\n" files=$(find /my/directory -iname "*.css" -type f -exec basename {} ';')
+pepper render listing_blog --hashmap --json-datastream blog_billet_stream blog_billet_stream=[{"title":"my first item","text":"my first text"}]
+
+namespaces ?
+

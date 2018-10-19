@@ -1,0 +1,39 @@
+type HtmlProp (Text name, Text Value)
+    edit : "%s='%s'" name value
+
+type HtmlDocument (Iterable<HtmlLeaf> leaves):
+ edit : "<!Doctype HTML>\n" leaves.foreach(HtmlLeaf::edit)
+
+type HtmlLeaf (Text name, Map<HtmlProp> props)
+    edit : "<" name props.foreach(HtmlProp::edit) "/>"
+
+type HtmlNode (Text name, Map props, Iterable<HtmlLeaf> content) : HtmlLeaf(name)
+    edit : "<" name props.foreach(HtmlProp::edit) ">" content.foreach(HtmlLeaf::edit) "</" name ">"
+
+type html (Iterable<HtmlLeaf> content)
+    edit : content.foreach(HtmlLeaf::edit);
+
+
+type html : HtmlNode(name="html",content=[])
+type head : HtmlNode(name="head",content=[]);
+type body : HtmlNode(name="body",content=[]);
+type charset(Text encoding) : HtmlLeaf(name="meta",props=Map(HtmlProp("charset",encoding)))
+
+HtmlDocument DefaultPage(html headcontent, html bodycontent)
+    html
+        head
+            charset "UTF-8"
+            headcontent
+        body
+            bodycontent
+
+
+
+HtmlDocument RenderBlog(Server::fromStream<billet-list,Iterable<Map>> items, Server::fromStream<billet-printer,FlavourDisplayer>);
+
+type Flavour ~ list, ...
+type FlavourDisplayer
+    edit
+
+
+pepper render RenderBlog --expect json billet-list=[{title,name...}]

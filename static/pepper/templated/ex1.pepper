@@ -1,0 +1,53 @@
+html base(list js, list css,html header, html content, html footer)
+    basicHtml5Doctype
+    htmltag
+        head
+            charset "utf-8"
+            iterate js | makeJs
+            iterate css | makeCss
+        body
+            header
+            content
+            footer
+
+html htmltag(html content) : Node('html', content);
+html span(text text) : TextNode(text)
+
+html charset (text encoding)
+    "<meta charset='%encoding'>"
+
+html basicHtml5Doctype
+    "<!doctype HTML>"
+
+html general(html content) : base (specifJs, specifCss, merchantSpecificHeader, content, merchantSpecificFooter)
+
+html makeJs(file f)
+    "<script type='application/javascript' src='%s'>" f.path
+
+html makeCss(file f)
+    "<link rel='stylesheet' type='text/css' href='%s'>" f.path
+
+html merchantGenericHeader(text title, text url)
+    "<header>"
+        "<h1>"
+            "<span>%stitle" title
+            "<img src='%s'>" url
+
+html merchantSpecificFooter(text text)
+    "<footer>"
+        "<span>%s" text
+
+html merchantSpecificHeader : merchantGenericHeader(title="SUPER SITE IZI MAGGLE", url="http://fixedUrl.jpg")
+html merchantSpecificFooter : merchantGenericFooter(text="Call me at N° ...")
+
+html listing_blog : general(content)
+    content uses immediate datastream blog_billet_stream as billet
+        printBillet(billet.title, billet.text | substr(0,100)
+
+html printBillet(text title, text text)
+    "<section>"
+        "<header>%s" title
+        "<p>%s" text
+
+list specifJs uses recorded datastream
+list specifCss uses recorded datastream
