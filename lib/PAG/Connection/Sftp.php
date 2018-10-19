@@ -9,6 +9,7 @@
 namespace PAG\Connection;
 
 
+use PAG\Collection\FileResourceIterator;
 use PAG\Connection\Exception\FailedToChmod;
 use PAG\Connection\Exception\FailedToDelete;
 use PAG\Connection\Exception\FailedToGetFile;
@@ -178,6 +179,17 @@ class Sftp implements Ssh2, RemoteFileTransferTool
     public function read($filename): string
     {
         return file_get_contents($this->makeSsh2Link() . $filename);
+    }
+
+    public function ls(string $string)
+    {
+        $file_descriptor = intval($this->sftp);
+        return new SftpDirIterator("ssh2.sftp://{$file_descriptor}", $string);
+    }
+
+    public function exec(string $string)
+    {
+        return ssh2_exec($this->connection, $string);
     }
 
 }
