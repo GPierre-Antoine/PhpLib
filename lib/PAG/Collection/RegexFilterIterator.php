@@ -28,13 +28,13 @@ class RegexFilterIterator implements \Iterator
     public function next()
     {
         $this->innerIterator->next();
-        while ($this->valid() && !preg_match($this->pattern, $this->current())) {
-            $this->innerIterator->next();
-        }
     }
 
     public function valid()
     {
+        while ($this->innerIterator->valid() && !preg_match($this->pattern, $this->current())) {
+            $this->innerIterator->next();
+        }
         return $this->innerIterator->valid();
     }
 
