@@ -10,19 +10,17 @@ namespace PAG\Collection;
 
 
 use Iterator;
+use PAG\Collection\Filter\Filter;
 
-class RegexFilterIterator implements \Iterator
+class FilterIterator implements \Iterator
 {
-    /**
-     * @var Iterator
-     */
     private $innerIterator;
-    private $pattern;
+    private $filter;
 
-    public function __construct(Iterator $innerIterator, $pattern)
+    public function __construct(Iterator $innerIterator, Filter $pattern)
     {
         $this->innerIterator = $innerIterator;
-        $this->pattern       = $pattern;
+        $this->filter        = $pattern;
     }
 
     public function next()
@@ -32,7 +30,7 @@ class RegexFilterIterator implements \Iterator
 
     public function valid()
     {
-        while ($this->innerIterator->valid() && !preg_match($this->pattern, $this->current())) {
+        while ($this->innerIterator->valid() && $this->filter->filter($this->current())) {
             $this->innerIterator->next();
         }
         return $this->innerIterator->valid();
