@@ -1,6 +1,6 @@
 {
     "name": "gpierre-antoine/phplib",
-    "description": "Php Library reinvent the wheel",
+    "description": "Php Library to reinvent the wheel",
     "type": "library project",
     "require-dev": {
         "phpunit/phpunit": "^8.3",
@@ -14,6 +14,14 @@
         }
     ],
     "require": {
-        "monolog/monolog": "^1.24"
+        "monolog/monolog": "^1.24",
+        "psr/log": "^1.1",
+        "psr/link": "^1.0",
+        "psr/cache": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PAG\\": "src/PAG"
+        }
     }
 }
