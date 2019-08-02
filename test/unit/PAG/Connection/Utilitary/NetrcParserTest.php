@@ -1,5 +1,8 @@
 <?php
 
+namespace unit\PAG\Connection\Utilitary; 
+
+
 use PAG\Connection\Utilitary\NetrcParser;
 use PHPUnit\Framework\TestCase;
 
