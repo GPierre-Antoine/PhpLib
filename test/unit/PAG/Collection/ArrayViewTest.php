@@ -1,5 +1,7 @@
 <?php
 
+namespace unit\PAG\Collection; 
+
 use PAG\Collection\ArrayView;
 use PHPUnit\Framework\TestCase;
 

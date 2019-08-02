@@ -1,10 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: pierreantoine
- * Date: 26/07/18
- * Time: 11:27
- */
+
+namespace unit\PAG\Collection; 
+
 
 use PAG\Collection\Collection;
 use PHPUnit\Framework\TestCase;

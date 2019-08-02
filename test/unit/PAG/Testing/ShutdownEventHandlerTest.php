@@ -1,5 +1,8 @@
 <?php
 
+namespace unit\PAG\Testing; 
+
+
 use PAG\Testing\BlackboxedScriptRunner;
 use PHPUnit\Framework\TestCase;
 
