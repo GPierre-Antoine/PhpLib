@@ -1,12 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: pierreantoine
- * Date: 30/08/18
- * Time: 11:36
- */
-
-namespace connections;
 
 use PAG\Connection\Utilitary\NetrcParser;
 use PHPUnit\Framework\TestCase;
