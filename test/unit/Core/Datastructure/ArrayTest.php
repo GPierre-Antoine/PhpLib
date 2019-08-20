@@ -11,13 +11,13 @@ class ArrayTest extends TestCase
     public function testArrayKey()
     {
         $firstArray = ['key' => 'value'];
-        $secondArray = array_map(function ($item) {
+        $secondArray = array_map(static function ($item) {
             return $item;
         },
             $firstArray);
         $this->assertArrayHasKey('key', $secondArray);
         $thirdArray = array_filter($firstArray,
-            function () {
+            static function () {
                 return true;
             });
         $this->assertArrayHasKey('key', $thirdArray);
