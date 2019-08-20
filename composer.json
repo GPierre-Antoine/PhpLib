@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "PAG\\": "src/PAG"
+            "PAG\\": "lib/PAG"
         }
     }
 }

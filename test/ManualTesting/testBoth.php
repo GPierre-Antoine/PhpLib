@@ -2,7 +2,7 @@
 
 use PAG\Shutdown\ShutdownEventHandler;
 
-require_once __DIR__ . "/../test_bootstrap.php";
+require_once __DIR__ . "/loader.php";
 
 ini_set("display_errors", '0');
 
