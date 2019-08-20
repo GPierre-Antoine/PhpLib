@@ -30,4 +30,10 @@ class ArrayTest extends TestCase
         $this->assertEquals([2 => 'a', 3 => 'z', 4 => 'e', 5 => 'w', 6 => 't', 7 => 'l'], $first + $second);
         $this->assertEquals(['a', 'z', 'e', 'w', 'r', 't', 'v', 'l'], array_merge($first, $second));
     }
+
+    public function testEmptyShift()
+    {
+        $array = [];
+        $this->assertNull(array_shift($array));
+    }
 }
