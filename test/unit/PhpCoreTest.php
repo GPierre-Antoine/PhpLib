@@ -8,7 +8,7 @@ class PhpCoreTest extends TestCase
     public function testStrrpos()
     {
         $name = "\zzz\azeaze";
-        $lastPos = strrpos($name, '\\');
+        $lastPos = mb_strrpos($name, '\\');
         $this->assertEquals('\azeaze', mb_substr($name, $lastPos));
     }
 }
