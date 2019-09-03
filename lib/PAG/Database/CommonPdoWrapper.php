@@ -10,6 +10,7 @@ namespace PAG\Database;
 
 
 use PDO;
+use PDOStatement;
 
 class CommonPdoWrapper implements DatabaseWrapper
 {
@@ -97,7 +98,7 @@ class CommonPdoWrapper implements DatabaseWrapper
         $this->pdo->rollBack();
     }
 
-    public function run(string $sql, ... $args): \PDOStatement
+    public function run(string $sql, ... $args): PDOStatement
     {
         $this->reconnect();
         if (!$args) {
@@ -112,21 +113,21 @@ class CommonPdoWrapper implements DatabaseWrapper
         return $stmt;
     }
 
-    private final function treatStatement(\PDOStatement $stmt): void
+    private final function treatStatement(PDOStatement $stmt): void
     {
         $this->request_count += 1;
         $this->treatStatementChild($stmt);
     }
 
-    protected function treatStatementChild(\PDOStatement $statement): void
+    protected function treatStatementChild(PDOStatement $statement): void
     {
 
     }
 
-    public function prepare(string $request): \PDOStatement
+    public function prepare(string $request): PDOStatement
     {
         $this->reconnect();
-        /** @var \PDOStatement $stmt */
+        /** @var PDOStatement $stmt */
         $stmt = $this->pdo->prepare($request);
         $this->treatStatement($stmt);
         return $stmt;

@@ -9,7 +9,9 @@
 namespace PAG\Collection;
 
 
-class ArrayView implements \ArrayAccess
+use ArrayAccess;
+
+class ArrayView implements ArrayAccess
 {
     private $array;
     private $callable;

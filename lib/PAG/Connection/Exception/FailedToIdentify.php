@@ -9,7 +9,9 @@
 namespace PAG\Connection\Exception;
 
 
-class FailedToIdentify extends \RuntimeException implements PubkeyException, PasswordException
+use RuntimeException;
+
+class FailedToIdentify extends RuntimeException implements PubkeyException, PasswordException
 {
 
 }

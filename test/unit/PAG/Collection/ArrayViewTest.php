@@ -17,19 +17,18 @@ class ArrayViewTest extends TestCase
 
     public function testOffsetGetMulti()
     {
-        $refArray     = ['key' => '<value>'];
+        $refArray     = ['key' => '<>DUMMY'];
         $view1  = new ArrayView($refArray, "strtoupper");
         $view2 = new ArrayView($view1, function ($item) {
             return htmlentities($item, ENT_QUOTES);
         });
-        $this->assertEquals("&lt;VALUE&gt;", "$view2[key]");
+        $this->assertEquals("&lt;&gt;DUMMY", "$view2[key]");
     }
 
     public function testOffsetUnset()
     {
         $array        = ['key' => 'y'];
-        $nullFunction = function () {
-        };
+        $nullFunction = function () {        };
         (new ArrayView($array, $nullFunction))->offsetUnset('key');
         $this->assertEmpty($array);
     }

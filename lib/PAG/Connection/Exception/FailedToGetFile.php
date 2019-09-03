@@ -8,7 +8,9 @@
 
 namespace PAG\Connection\Exception;
 
-class FailedToGetFile extends \RuntimeException implements FtpException, SftpException
+use RuntimeException;
+
+class FailedToGetFile extends RuntimeException implements FtpException, SftpException
 {
 
 }

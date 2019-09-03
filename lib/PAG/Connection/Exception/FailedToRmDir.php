@@ -9,7 +9,9 @@
 namespace PAG\Connection\Exception;
 
 
-class FailedToRmDir extends \RuntimeException implements SftpException
+use RuntimeException;
+
+class FailedToRmDir extends RuntimeException implements SftpException
 {
 
 }

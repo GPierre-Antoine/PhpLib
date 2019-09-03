@@ -9,7 +9,10 @@
 namespace PAG\Connection;
 
 
-class SftpDirIterator implements \Iterator
+use Iterator;
+use RuntimeException;
+
+class SftpDirIterator implements Iterator
 {
     private $connectionString;
     private $opened;
@@ -59,7 +62,7 @@ class SftpDirIterator implements \Iterator
     {
         $this->resource = opendir($this->connectionString . $this->path);
         if (!$this->resource) {
-            throw new \RuntimeException("No such directory {$this->path}");
+            throw new RuntimeException("No such directory {$this->path}");
         }
         $this->opened = true;
     }

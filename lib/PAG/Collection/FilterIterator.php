@@ -12,7 +12,7 @@ namespace PAG\Collection;
 use Iterator;
 use PAG\Collection\Filter\Filter;
 
-class FilterIterator implements \Iterator
+class FilterIterator implements Iterator
 {
     private $innerIterator;
     private $filter;

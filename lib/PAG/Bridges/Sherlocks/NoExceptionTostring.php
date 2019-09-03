@@ -9,6 +9,8 @@
 namespace PAG\Bridges\Sherlocks;
 
 
+use Exception;
+
 trait NoExceptionTostring
 {
     public function __toString(): string
@@ -16,7 +18,7 @@ trait NoExceptionTostring
         try {
             return $this->computeString();
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             return "";
         }
     }

@@ -4,7 +4,9 @@ namespace unit\PAG\Connection\Utilitary;
 
 
 use PAG\Connection\Utilitary\NetrcParser;
+use ParseError;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class NetrcParserTest extends TestCase
 {
@@ -22,7 +24,7 @@ class NetrcParserTest extends TestCase
 
     public function test_bad_construct()
     {
-        $this->expectException(\ParseError::class);
+        $this->expectException(ParseError::class);
         new NetrcParser("machine ftp.host.fr login login-value password");
     }
 
@@ -36,7 +38,7 @@ class NetrcParserTest extends TestCase
 
     public function testBadGetCouple()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $parser = $this->makeCorrectParser();
         $parser->getCouple('bad domain');
     }

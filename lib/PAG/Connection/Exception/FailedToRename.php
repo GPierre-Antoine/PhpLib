@@ -9,7 +9,9 @@
 namespace PAG\Connection\Exception;
 
 
-class FailedToRename extends \RuntimeException implements SftpException
+use RuntimeException;
+
+class FailedToRename extends RuntimeException implements SftpException
 {
 
 }

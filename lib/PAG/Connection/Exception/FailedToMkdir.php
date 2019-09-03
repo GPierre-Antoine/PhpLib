@@ -8,7 +8,9 @@
 
 namespace PAG\Connection\Exception;
 
-class FailedToMkdir extends \RuntimeException implements FtpException, SftpException
+use RuntimeException;
+
+class FailedToMkdir extends RuntimeException implements FtpException, SftpException
 {
 
 }

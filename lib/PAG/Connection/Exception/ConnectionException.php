@@ -9,7 +9,9 @@
 namespace PAG\Connection\Exception;
 
 
-interface ConnectionException extends \Throwable
+use Throwable;
+
+interface ConnectionException extends Throwable
 {
 
 }
