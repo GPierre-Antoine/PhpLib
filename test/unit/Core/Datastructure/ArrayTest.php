@@ -36,4 +36,45 @@ class ArrayTest extends TestCase
         $array = [];
         $this->assertNull(array_shift($array));
     }
+
+
+    public function testForeach()
+    {
+        $collection = [1, 2, 3];
+        $collection2 = [];
+        foreach ($collection as $item) {
+            $collection2[] = $item;
+            $collection[2] = 4;
+        }
+        $this->assertEquals('123', join('', $collection2));
+    }
+
+    public function testForeachReference()
+    {
+        $collection = [1, 2, 3];
+        $collection2 = [];
+        foreach ($collection as &$item) {
+            $collection2[] = $item;
+            $collection[2] = 4;
+        }
+        $this->assertEquals('124', join('', $collection2));
+    }
+
+    public function testForeachReferencePop()
+    {
+        $collection = [1, 2];
+        foreach ($collection as &$item) {
+            array_pop($collection);
+        }
+        $this->assertEquals('1', join('', $collection));
+    }
+
+    public function testForeachPop()
+    {
+        $collection = [1, 2];
+        foreach ($collection as $item) {
+            array_pop($collection);
+        }
+        $this->assertEmpty($collection);
+    }
 }
