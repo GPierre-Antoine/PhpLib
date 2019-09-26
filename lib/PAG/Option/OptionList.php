@@ -9,6 +9,7 @@
 namespace siwipo\io\Options;
 
 use PAG\Collection\Collection;
+use RuntimeException;
 
 class OptionList extends ValuedAbstractOption
 {
@@ -28,7 +29,7 @@ class OptionList extends ValuedAbstractOption
     public function setValue($value)
     {
         if (!$this->getPossibleValues()->hasValue($value)) {
-            throw new \RuntimeException("Invalid value {$value} in  : ["
+            throw new RuntimeException("Invalid value {$value} in  : ["
                                         . $this->getPossibleValues()->values()->join(', ') . ']');
         }
         parent::setValue($value);

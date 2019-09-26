@@ -9,8 +9,17 @@
 namespace PAG\Collection;
 
 
-class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
-    \Serializable, \JsonSerializable
+use ArrayAccess;
+use ArrayIterator;
+use Closure;
+use Countable;
+use IteratorAggregate;
+use JsonSerializable;
+use RuntimeException;
+use Serializable;
+
+class Collection implements IteratorAggregate, ArrayAccess, Countable,
+    Serializable, JsonSerializable
 {
     protected $arr;
     protected $options;
@@ -61,9 +70,9 @@ class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
         return static::makeCollection(array_values($this->arr), $this->options);
     }
 
-    public function getIterator() : \ArrayIterator
+    public function getIterator() : ArrayIterator
     {
-        return new \ArrayIterator($this->arr);
+        return new ArrayIterator($this->arr);
     }
 
     public function offsetUnset($offset) : void
@@ -141,7 +150,7 @@ class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
     }
 
     /**
-     * @param $closure \Closure
+     * @param $closure Closure
      *
      * @return Collection
      */
@@ -175,7 +184,7 @@ class Collection implements \IteratorAggregate, \ArrayAccess, \Countable,
     public function offsetGet($offset)
     {
         if (!$this->offsetExists($offset)) {
-            throw new \RuntimeException('Unknown key : '.$offset);
+            throw new RuntimeException('Unknown key : '.$offset);
         }
 
         return $this->arr[$offset];

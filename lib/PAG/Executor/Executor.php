@@ -9,6 +9,7 @@
 namespace PAG\Executor;
 
 
+use Exception;
 use PAG\Traits\LoggerAwareTrait;
 use Psr\Log\LoggerAwareInterface;
 use RuntimeException;
@@ -27,7 +28,7 @@ class Executor implements LoggerAwareInterface
             $this->makeExecutable($arg, $args)->run();
 
         }
-        catch (\Exception $exception) {
+        catch (Exception $exception) {
             $this->getLogger()->error($exception->getMessage());
         }
     }

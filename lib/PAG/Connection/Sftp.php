@@ -9,7 +9,6 @@
 namespace PAG\Connection;
 
 
-use PAG\Collection\FileResourceIterator;
 use PAG\Connection\Exception\FailedToChmod;
 use PAG\Connection\Exception\FailedToDelete;
 use PAG\Connection\Exception\FailedToGetFile;
@@ -42,7 +41,7 @@ class Sftp implements Ssh2, RemoteFileTransferTool
     {
         $this->sftp = ssh2_sftp($this->connection);
         if (!$this->sftp) {
-            throw new \RuntimeException("Could not initialize SFTP subsystem.");
+            throw new RuntimeException("Could not initialize SFTP subsystem.");
         }
     }
 

@@ -8,6 +8,8 @@
 
 namespace PAG\Database;
 
+use PDOStatement;
+
 interface DatabaseWrapper
 {
     public function getDbname(): string;
@@ -20,9 +22,9 @@ interface DatabaseWrapper
 
     public function rollback(): void;
 
-    public function run(string $sql, ...$args): \PDOStatement;
+    public function run(string $sql, ...$args): PDOStatement;
 
-    public function prepare(string $request): \PDOStatement;
+    public function prepare(string $request): PDOStatement;
 
     public function getRequestCount(): int;
 

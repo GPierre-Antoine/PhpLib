@@ -9,6 +9,8 @@
 namespace PAG\Database;
 
 
+use PDOStatement;
+
 class DatabaseWrapperDelegator implements DatabaseWrapper
 {
 
@@ -47,12 +49,12 @@ class DatabaseWrapperDelegator implements DatabaseWrapper
         $this->wrapper->rollback();
     }
 
-    public function run(string $sql, ...$args): \PDOStatement
+    public function run(string $sql, ...$args): PDOStatement
     {
         return $this->wrapper->run($sql, ...$args);
     }
 
-    public function prepare(string $request): \PDOStatement
+    public function prepare(string $request): PDOStatement
     {
         return $this->wrapper->prepare($request);
     }

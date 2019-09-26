@@ -9,7 +9,9 @@
 namespace PAG\Connection\Exception;
 
 
-class BadFingerPrint extends \RuntimeException implements Ssh2Exception
+use RuntimeException;
+
+class BadFingerPrint extends RuntimeException implements Ssh2Exception
 {
 
 }

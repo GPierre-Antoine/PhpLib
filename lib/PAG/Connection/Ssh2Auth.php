@@ -62,5 +62,5 @@ trait Ssh2Auth
         }
     }
 
-    protected abstract function ssh2Identify($connection) : void;
+
 }

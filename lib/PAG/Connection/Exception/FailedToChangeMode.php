@@ -8,7 +8,9 @@
 
 namespace PAG\Connection\Exception;
 
-class FailedToChangeMode extends \RuntimeException implements FtpException
+use RuntimeException;
+
+class FailedToChangeMode extends RuntimeException implements FtpException
 {
 
 }

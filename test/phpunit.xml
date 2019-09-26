@@ -1,14 +1,17 @@
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.3/phpunit.xsd"
+        forceCoversAnnotation="true"
+        beStrictAboutCoversAnnotation="true"
         beStrictAboutOutputDuringTests="true"
-        backupGlobals="true"
-        cacheResult="false"
+        beStrictAboutTodoAnnotatedTests="true"
         colors="true"
+        bootstrap="../vendor/autoload.php"
+        verbose="true"
 >
-    <testsuites>
+<testsuites>
         <testsuite name="default">
-            <directory>tests/unit</directory>
+            <directory>unit</directory>
         </testsuite>
     </testsuites>
 </phpunit>

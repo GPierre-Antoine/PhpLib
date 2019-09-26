@@ -9,6 +9,8 @@
 namespace siwipo\io\Options;
 
 
+use RuntimeException;
+
 class OptionMapList extends OptionList
 {
     public function accept(OptionVisitor $visitor)
@@ -19,7 +21,7 @@ class OptionMapList extends OptionList
     public function setValue($value)
     {
         if (!$this->getPossibleValues()->hasKey($value)) {
-            throw new \RuntimeException("Invalid value {$value} in  : ["
+            throw new RuntimeException("Invalid value {$value} in  : ["
                                         . $this->getPossibleValues()->keys()->join(', ') . ']');
         }
         $this->value = $this->getPossibleValues()[$value];

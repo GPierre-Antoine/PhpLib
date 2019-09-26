@@ -11,7 +11,7 @@ class BlackboxedScriptRunner
 
     public static function fetchScriptStdout($script) : string
     {
-        return self::secureExecuteFile($script, ' 2>/dev/null');
+        return self::secureExecuteFile(realpath($script), ' 2> /dev/null');
     }
 
     private static function secureExecuteFile($script, $option) : string
@@ -20,7 +20,8 @@ class BlackboxedScriptRunner
             throw new RuntimeException("Cannot use this function in this setting for security reasons");
         }
 
-        return shell_exec(self::$php." -f $script -- $option");
+        $execString = self::$php." -f $script -- $option";
+        return shell_exec($execString) ?: '';
     }
 
     private static function checkContextReliabilty() : bool
