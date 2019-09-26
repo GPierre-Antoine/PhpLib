@@ -9,7 +9,9 @@
 namespace PAG\Connection\Exception;
 
 
-class FailedToPutFile extends \RuntimeException implements FtpException, SftpException
+use RuntimeException;
+
+class FailedToPutFile extends RuntimeException implements FtpException, SftpException
 {
 
 }

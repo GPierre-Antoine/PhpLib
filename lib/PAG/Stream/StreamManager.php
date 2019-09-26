@@ -9,6 +9,8 @@
 namespace PAG\Stream;
 
 
+use php_user_filter;
+
 class StreamManager implements StreamFilterVisitor
 {
     private $streamFilterName;
@@ -20,7 +22,7 @@ class StreamManager implements StreamFilterVisitor
         $this->closure          = $closure;
     }
 
-    public static function register($name, \php_user_filter $filter)
+    public static function register($name, php_user_filter $filter)
     {
         stream_filter_register($name, get_class($filter));
     }

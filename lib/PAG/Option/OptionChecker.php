@@ -10,6 +10,7 @@ namespace siwipo\io\Options;
 
 use PAG\Collection\Collection;
 use PAG\IO\Text\TextFormatter;
+use RuntimeException;
 
 class OptionChecker implements OptionVisitor
 {
@@ -53,7 +54,7 @@ class OptionChecker implements OptionVisitor
             if ($value->isMandatory() && !$value->isDone()) {
                 $help    = $this->helpText();
                 $keyname = $this->formatter->bold($key);
-                throw new \RuntimeException("Unvaluated Option {$value->getName()} with switch «{$keyname}».$help");
+                throw new RuntimeException("Unvaluated Option {$value->getName()} with switch «{$keyname}».$help");
             }
         }
     }
@@ -80,7 +81,7 @@ class OptionChecker implements OptionVisitor
             $help_text = $this->helpText();
 
 
-            throw new \RuntimeException("Missing argument for string option {$string->getName()}.$help_text");
+            throw new RuntimeException("Missing argument for string option {$string->getName()}.$help_text");
         }
         $string->setValue($this->argv_duplicate[$index + 1]);
         unset($this->argv_duplicate[$index + 1]);
@@ -95,7 +96,7 @@ class OptionChecker implements OptionVisitor
     {
         $index = $this->argv_duplicate->find($this->current_binding);
         if ($index >= 2 + count($this->argv_duplicate)) {
-            throw new \RuntimeException("Missing argument for List option {$list->getName()}");
+            throw new RuntimeException("Missing argument for List option {$list->getName()}");
         }
         $value = $this->argv_duplicate[$index + 1];
         $list->setValue($value);

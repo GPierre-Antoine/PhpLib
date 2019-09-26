@@ -13,8 +13,8 @@ class ShutdownEventHandler
 {
     private static $shutdown;
     private static $shutdown_error;
+    private static $context = [];
     private static $initialized = false;
-    private static $context     = [];
 
     public static function registerShutdownHandler($identifier, $function)
     {
@@ -27,6 +27,8 @@ class ShutdownEventHandler
         if (!self::$initialized) {
             self::$initialized = true;
             self::registerShutdown();
+            self::$shutdown = [];
+            self::$shutdown_error = [];
         }
     }
 
@@ -39,13 +41,14 @@ class ShutdownEventHandler
 
     private static function shutdown()
     {
-        if (!is_null($error = error_get_last())) {
+        $error = error_get_last();
+        if (!is_null($error)) {
             self::runCallbacks(self::$shutdown_error, $error);
         }
         self::runCallbacks(self::$shutdown);
     }
 
-    private static function runCallbacks($array, $arguments = []): void
+    private static function runCallbacks(array $array, $arguments = []): void
     {
         foreach ($array as $function) {
             call_user_func($function, self::$context, $arguments);

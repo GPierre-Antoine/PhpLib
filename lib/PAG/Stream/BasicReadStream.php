@@ -10,8 +10,9 @@ namespace PAG\Stream;
 
 
 use PAG\Traits\StreamFilterReaderTrait;
+use php_user_filter;
 
-abstract class BasicReadStream extends \php_user_filter implements ReadStreamFilter
+abstract class BasicReadStream extends php_user_filter implements ReadStreamFilter
 {
     use StreamFilterReaderTrait;
 }

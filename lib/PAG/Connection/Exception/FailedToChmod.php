@@ -8,7 +8,9 @@
 
 namespace PAG\Connection\Exception;
 
-class FailedToChmod extends \RuntimeException implements SftpException
+use RuntimeException;
+
+class FailedToChmod extends RuntimeException implements SftpException
 {
 
 }

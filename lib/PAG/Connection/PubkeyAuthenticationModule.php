@@ -10,6 +10,7 @@ namespace PAG\Connection;
 
 use PAG\Connection\Exception\FailedToIdentify;
 use RuntimeException;
+use function ssh2_auth_pubkey_file;
 
 class PubkeyAuthenticationModule implements AuthenticationModule
 {
@@ -46,7 +47,7 @@ class PubkeyAuthenticationModule implements AuthenticationModule
 
     private function ssh2Identify($connection)
     {
-        if (!\ssh2_auth_pubkey_file($connection, $this->username, $this->pubkey_file, $this->privkey_file)) {
+        if (!ssh2_auth_pubkey_file($connection, $this->username, $this->pubkey_file, $this->privkey_file)) {
             throw new FailedToIdentify("Could not connect to remote host with pubkey");
         }
     }

@@ -9,7 +9,9 @@
 namespace PAG\Connection\Exception;
 
 
-class FailedToSymlink extends \RuntimeException implements SftpException
+use RuntimeException;
+
+class FailedToSymlink extends RuntimeException implements SftpException
 {
 
 }

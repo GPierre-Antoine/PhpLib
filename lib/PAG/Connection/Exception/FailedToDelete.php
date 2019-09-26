@@ -8,7 +8,9 @@
 
 namespace PAG\Connection\Exception;
 
-class FailedToDelete extends \RuntimeException implements FtpException, SftpException
+use RuntimeException;
+
+class FailedToDelete extends RuntimeException implements FtpException, SftpException
 {
 
 }

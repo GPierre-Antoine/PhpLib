@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestSuite;
 use PHPUnit\Framework\Warning;
 use PHPUnit\Runner\TestHook;
 use PHPUnit\Runner\TestListenerAdapter;
+use Throwable;
 
 /**
  * Created by PhpStorm.
@@ -41,7 +42,7 @@ class TestListenerDelegator implements TestListener
         $this->forward->startTest($test);
     }
 
-    public function addError(Test $test, \Throwable $t, float $time): void
+    public function addError(Test $test, Throwable $t, float $time): void
     {
         $this->forward->addError($test, $t, $time);
     }
@@ -56,17 +57,17 @@ class TestListenerDelegator implements TestListener
         $this->forward->addFailure($test, $e, $time);
     }
 
-    public function addIncompleteTest(Test $test, \Throwable $t, float $time): void
+    public function addIncompleteTest(Test $test, Throwable $t, float $time): void
     {
         $this->forward->addIncompleteTest($test, $t, $time);
     }
 
-    public function addRiskyTest(Test $test, \Throwable $t, float $time): void
+    public function addRiskyTest(Test $test, Throwable $t, float $time): void
     {
         $this->forward->addRiskyTest($test, $t, $time);
     }
 
-    public function addSkippedTest(Test $test, \Throwable $t, float $time): void
+    public function addSkippedTest(Test $test, Throwable $t, float $time): void
     {
         $this->forward->addSkippedTest($test, $t, $time);
     }

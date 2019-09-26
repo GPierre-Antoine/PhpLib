@@ -11,6 +11,7 @@ namespace PAG\Connection\Utilitary;
 
 
 
+use ParseError;
 use RuntimeException;
 
 class NetrcParser
@@ -72,7 +73,7 @@ class NetrcParser
     private function assertLength():void
     {
         if ($this->currentIndex >= count($this->tokens)) {
-            throw new \ParseError();
+            throw new ParseError();
         }
     }
 }
