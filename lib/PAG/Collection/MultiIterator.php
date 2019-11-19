@@ -15,9 +15,9 @@ class MultiIterator implements Iterator
     /**
      * @var Iterator[]
      */
-    private array $collections;
+    private $collections;
 
-    private int $collectionIndex = 0;
+    private $collectionIndex = 0;
 
     public function __construct(iterable ...$collections)
     {
