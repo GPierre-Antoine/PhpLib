@@ -102,10 +102,10 @@ class CollectionTest extends TestCase
     {
         $array      = [1, 2, 3];
         $collection = new Collection([3, 2, 1]);
-        $collection->sort(function ($first, $second) {
+        $sorted = $collection->sort(function ($first, $second) {
             return $first - $second;
         });
-        $this->assertEquals($array, $collection->getArrayCopy());
+        $this->assertEquals($array, $sorted->getArrayCopy());
     }
 
     public function testDuplicate()

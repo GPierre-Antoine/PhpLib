@@ -20,15 +20,22 @@ class AutoHashCollection extends Collection
         foreach ($array as $value) {
             $this[] = $value;
         }
-
     }
 
-    public static function makeCollection($array, $options) : Collection
+    /**
+     * @param $array
+     * @param array $options
+     * @return static
+     */
+    public static function makeCollection(array $array, array $options): Collection
     {
         return new AutoHashCollection($options[static::CLOSURE], $array, $options);
     }
 
-    public function offsetSet($offset, $value) : void
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $offset = call_user_func($this->options[static::CLOSURE], $value);
@@ -36,7 +43,10 @@ class AutoHashCollection extends Collection
         parent::offsetSet($offset, $value);
     }
 
-    public function slice($offset, $length = null, $preserve_keys = true) : Collection
+    /**
+     * @inheritDoc
+     */
+    public function slice($offset, $length = null, $preserve_keys = true): Collection
     {
         return parent::slice($offset, $length, $preserve_keys);
     }

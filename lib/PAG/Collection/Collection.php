@@ -11,47 +11,39 @@ namespace PAG\Collection;
 
 use ArrayAccess;
 use ArrayIterator;
-use Closure;
 use Countable;
 use IteratorAggregate;
 use JsonSerializable;
-use RuntimeException;
 use Serializable;
 
 class Collection implements IteratorAggregate, ArrayAccess, Countable,
-    Serializable, JsonSerializable
+                            Serializable, JsonSerializable
 {
     protected $arr;
     protected $options;
 
-    public function __construct(array $array = [], $options = [])
+    public function __construct(array $array = [], array $options = [])
     {
-        $this->arr = $array;
+        $this->arr     = $array;
         $this->options = $options;
     }
 
-    public static function explode($delimiter, $string, $options = []) : self
+    public static function explode(string $delimiter, string $string, array $options = []): self
     {
         return static::makeCollection(explode($delimiter, $string), $options);
     }
 
-    /**
-     * @param       $array
-     * @param array $options
-     *
-     * @return Collection
-     */
-    public static function makeCollection($array, $options) : self
+    public static function makeCollection(array $array, array $options): self
     {
         return new Collection($array, $options);
     }
 
-    public function duplicate() : self
+    public function duplicate(): self
     {
         return static::makeCollection($this->arr, $this->options);
     }
 
-    public function fromRange($first, $last = null, $step = 1) : self
+    public function fromRange(int $first, int $last = null, int $step = 1): self
     {
         $array = [];
         if (is_null($last)) {
@@ -65,142 +57,199 @@ class Collection implements IteratorAggregate, ArrayAccess, Countable,
         return static::makeCollection($array, $this->options);
     }
 
-    public function values() : self
+    public function values(): self
     {
         return static::makeCollection(array_values($this->arr), $this->options);
     }
 
-    public function getIterator() : ArrayIterator
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->arr);
     }
 
-    public function offsetUnset($offset) : void
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset($offset): void
     {
         unset($this->arr[$offset]);
     }
 
-    public function serialize() : string
+    /**
+     * @inheritDoc
+     * @return string
+     */
+    public function serialize(): string
     {
         return serialize($this->arr);
     }
 
-    public function unserialize($serialized) : void
+    /**
+     * @inheritDoc
+     * @param string $serialized
+     */
+    public function unserialize($serialized): void
     {
-        $this->arr = unserialize($serialized);
+        $this->arr = unserialize((string)$serialized);
     }
 
-    public function jsonSerialize()
+    /**
+     * @inheritDoc
+     * @return array
+     */
+    public function jsonSerialize(): array
     {
         return $this->arr;
     }
 
+    /**
+     * @return mixed
+     */
     public function shift()
     {
         return array_shift($this->arr);
     }
 
+    /**
+     * @return mixed
+     * @throws CollectionException
+     */
     public function first()
     {
         foreach ($this->arr as &$value) {
             return $value;
         }
 
-        return null;
+        throw new CollectionException("Collection empty");
     }
 
-    public function push($var) : self
+    /**
+     * @param $var
+     * @return static
+     */
+    public function push($var): self
     {
         array_push($this->arr, $var);
 
         return $this;
     }
 
-    public function sort($callable = null) : self
+    /**
+     * @param callable $closure
+     * @return static
+     */
+    public function sort(callable $closure = null): self
     {
+        $sort = "sort";
         if ($this->isAssociative()) {
-            $sort = "asort";
-        } else {
-            $sort = "sort";
+            $sort = "a$sort";
         }
-        $sort = "u$sort";
-        $sort($this->arr, $callable);
+        $collection = self::makeCollection($this->arr, $this->options);
+        if ($closure) {
+            $sort = "u$sort";
+            $sort($collection->arr, $closure);
+        } else {
+            $sort($collection->arr);
+        }
 
-        return $this;
+        return $collection;
     }
 
-    public function isAssociative() : bool
+    public function isAssociative(): bool
     {
         return $this->count() && ($this->keys()->arr !== range(0, $this->count() - 1));
     }
 
-    public function count() : int
+    public function count(): int
     {
         return count($this->arr);
     }
 
-    public function keys() : self
+    public function keys(): self
     {
         return static::makeCollection(array_keys($this->arr), $this->options);
     }
 
+    /**
+     * @return mixed
+     */
     public function pop()
     {
         return array_pop($this->arr);
     }
 
-    /**
-     * @param $closure Closure
-     *
-     * @return Collection
-     */
-    public function map($closure) : self
+    public function map(callable $closure): self
     {
         return static::makeCollection(array_map($closure, $this->arr), $this->options);
     }
 
-    public function walk($closure, $userdata = null) : self
+    /**
+     * @param callable $closure
+     * @param mixed $userdata
+     * @return static
+     */
+    public function walk(callable $closure, $userdata = null): self
     {
         $array = $this->arr;
         array_walk($array, $closure, $userdata);
 
-        return self::makeCollection($array, $this->options);
+        return static::makeCollection($array, $this->options);
     }
 
-    public function filter($closure) : self
+    public function filter(callable $closure): self
     {
         return static::makeCollection(array_filter($this->arr, $closure), $this->options);
     }
 
-    public function concat(Collection... $others) : self
+    public function concat(Collection...$others): self
     {
-        $other = array_map(function (Collection $collection) {
-            return $collection->arr;
-        }, $others);
+        $other = array_map(
+            function (Collection $collection) {
+                return $collection->arr;
+            },
+            $others
+        );
 
         return static::makeCollection(array_merge($this->arr, ...$other), $this->options);
     }
 
+    /**
+     * @param mixed $offset
+     * @return mixed
+     * @throws CollectionException
+     */
     public function offsetGet($offset)
     {
         if (!$this->offsetExists($offset)) {
-            throw new RuntimeException('Unknown key : '.$offset);
+            throw new CollectionException('Unknown key : ' . $offset);
         }
 
         return $this->arr[$offset];
     }
 
-    public function offsetExists($offset) : bool
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists($offset): bool
     {
         return $this->hasKey($offset);
     }
 
-    public function hasKey($item) : bool
+    /**
+     * @param mixed $item
+     * @return bool
+     */
+    public function hasKey($item): bool
     {
         return isset($this->arr[$item]) && array_key_exists($item, $this->arr);
     }
 
-    public function offsetSet($offset, $value) : void
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value): void
     {
         if (!is_null($offset)) {
             $this->arr[$offset] = $value;
@@ -209,22 +258,32 @@ class Collection implements IteratorAggregate, ArrayAccess, Countable,
         }
     }
 
-    public function hasValue($value) : bool
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    public function hasValue($value): bool
     {
         return in_array($value, $this->arr);
     }
 
+    /**
+     * @param mixed $item
+     * @param bool $strict
+     * @return false|int|string
+     */
     public function find($item, $strict = false)
     {
         return array_search($item, $this->arr, $strict);
     }
 
-    public function flip() : self
+    public function flip(): self
     {
         return static::makeCollection(array_flip($this->arr), $this->options);
     }
 
-    public function absorb($collection) : self
+
+    public function absorb(iterable $collection): self
     {
         foreach ($collection as $item) {
             $this[] = $item;
@@ -233,12 +292,12 @@ class Collection implements IteratorAggregate, ArrayAccess, Countable,
         return $this;
     }
 
-    public function combine(Collection $other) : self
+    public function combine(Collection $other): self
     {
         return static::makeCollection(array_combine($this->arr, $other->arr), $this->options);
     }
 
-    public function intersect($collections) : self
+    public function intersect($collections): self
     {
         $args = static::makeCollection(func_get_args(), $this->options);
         $args->unshift($this);
@@ -246,14 +305,14 @@ class Collection implements IteratorAggregate, ArrayAccess, Countable,
         return $args->intersectRecursive();
     }
 
-    public function unshift($var) : self
+    public function unshift($var): self
     {
         array_unshift($this->arr, $var);
 
         return $this;
     }
 
-    public function intersectRecursive() : self
+    public function intersectRecursive(): self
     {
         $args = [];
         foreach ($this->arr as $collection) {
@@ -267,22 +326,26 @@ class Collection implements IteratorAggregate, ArrayAccess, Countable,
         return static::makeCollection(call_user_func_array('array_intersect', $args), $this->options);
     }
 
-    public function getArrayCopy() : array
+    public function getArrayCopy(): array
     {
         return $this->arr;
     }
 
-    public function reverse() : self
+    public function reverse(): self
     {
         return static::makeCollection(array_reverse($this->arr), $this->options);
     }
 
-    public function reduce($closure)
+    /**
+     * @param callable $closure
+     * @return mixed
+     */
+    public function reduce(callable $closure)
     {
         return array_reduce($this->arr, $closure);
     }
 
-    public function __toString() : string
+    public function __toString(): string
     {
         if ($this->isAssociative()) {
             $string = "";
@@ -290,23 +353,29 @@ class Collection implements IteratorAggregate, ArrayAccess, Countable,
                 $string .= "$key => $value, ";
             }
 
-            return "[".substr($string, 0, mb_strlen($string) - 2)."]";
+            return "[" . substr($string, 0, mb_strlen($string) - 2) . "]";
         } else {
-            return "[".$this->join(', ')."]";
+            return "[" . $this->join(', ') . "]";
         }
     }
 
-    public function join($string) : string
+    public function join(string $string): string
     {
         return implode($string, $this->arr);
     }
 
-    public function slice($offset, $length = null, $preserve_keys = false) : self
+    /**
+     * @param int $offset
+     * @param int $length
+     * @param bool $preserve_keys
+     * @return static
+     */
+    public function slice($offset, $length = null, $preserve_keys = false): self
     {
         return static::makeCollection(array_slice($this->arr, $offset, $length, $preserve_keys), $this->options);
     }
 
-    public final function downcast() : Collection
+    public final function downcast(): Collection
     {
         return new Collection($this->arr);
     }
