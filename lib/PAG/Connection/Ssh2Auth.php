@@ -48,19 +48,21 @@ trait Ssh2Auth
     }
 
     /**
-     * @param Ssh2              $ssh2
-     * @param                   $connection
+     * @param Ssh2 $ssh2
+     * @param resource $connection
      */
-    private function checkFingerPrint(Ssh2 $ssh2, $connection)
+    private function checkFingerPrint(Ssh2 $ssh2, $connection): void
     {
-        if ($ssh2->hasFingerprint()) {
-            $fingerprint = ssh2_fingerprint($connection);
-            if ($ssh2->getFingerprint() !== $fingerprint) {
-                throw new BadFingerPrint("UNKNOWN HOST FINGERPRINT = $fingerprint",
-                    Ssh2::UNKNOWN_FINGERPRINT);
-            }
+        if (!$ssh2->hasFingerprint()) {
+            return;
+        }
+        $fingerprint = ssh2_fingerprint($connection);
+        if ($ssh2->getFingerprint() !== $fingerprint) {
+            throw new BadFingerPrint(
+                "UNKNOWN HOST FINGERPRINT = $fingerprint",
+                Ssh2::UNKNOWN_FINGERPRINT
+            );
         }
     }
-
 
 }

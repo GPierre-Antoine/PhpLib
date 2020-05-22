@@ -14,7 +14,7 @@ interface Ssh2 extends Connection
 
     public function connect($host, $port, AuthenticationModule $authentication_module): void;
 
-    public function hasFingerprint():bool;
+    public function hasFingerprint(): bool;
 
-    public function getFingerprint():string;
+    public function getFingerprint(): string;
 }
